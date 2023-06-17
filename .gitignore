@@ -1,0 +1,14 @@
+# Ignore everything in the repository root directory except .gitignore
+/*
+!.gitignore
+
+# But not the docker directory
+!docker/
+# Ignore db directory after docker compose up
+docker/db/
+
+# And not the docker-compose.yml file
+!docker-compose.yml
+
+# Ignore README
+!README.md
