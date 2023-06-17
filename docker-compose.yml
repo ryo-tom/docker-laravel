@@ -2,6 +2,9 @@ version: '3'
 services:
   app:
     build: ./docker/php
+    # --- Enable the following if using Laravel Vite ---
+    # ports:
+      # - 5173:5173
     volumes:
       - .:/var/www
   nginx:
