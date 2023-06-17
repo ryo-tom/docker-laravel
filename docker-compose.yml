@@ -15,6 +15,8 @@ services:
     depends_on:
       - app
   db:
+    # --- Enable the following if using M1 Mac ---
+    # platform: linux/x86_64 
     image: mysql:5.7 
     environment: 
       MYSQL_ROOT_PASSWORD: root
