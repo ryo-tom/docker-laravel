@@ -1,6 +1,6 @@
 # docker-laravel
 
-Laravel `10.x`（PHP `8.2`）用のdockerで開発環境。
+Laravel `10.x`（PHP `8.2`）用のdocker開発環境。
 
 ## 前提条件
 
