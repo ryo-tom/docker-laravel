@@ -26,4 +26,4 @@ RUN npm install npm@latest -g
 # Set the user UID and theuser group GID added above
 USER ${UID}:${GID}
 
-WORKDIR /var/www
+WORKDIR /project
