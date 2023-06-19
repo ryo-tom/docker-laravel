@@ -25,7 +25,25 @@ Laravel `10.x`（PHP `8.2`）用のdocker開発環境。
 - テスト用DBを使う場合: `testdb`サービスコンテナを追記
 - Viteを使う場合: port `5173`の設定を追記
 
+## プロジェクト準備
+
+git clone後、任意のプロジェクト名に変更してディレクトリへ移動しておく
+
+```bash
+git clone git@github.com:rk-techs/docker-laravel.git
+
+mv docker-laravel/ <directory_name>
+
+cd <directory_name>
+```
+
 ## Laravelインストール
+
+先にホスト側に`src`ディレクトリを用意しておく
+
+```bash
+mkdir src
+```
 
 ### appコンテナの中に入る
 
