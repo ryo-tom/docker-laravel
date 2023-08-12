@@ -45,6 +45,12 @@ cd <directory_name>
 mkdir src
 ```
 
+## docker環境構築
+
+```bash
+docker compose up -d
+```
+
 ### appコンテナの中に入る
 
 `app` サービスのコンテナ内で bash シェルを起動する
