@@ -6,17 +6,17 @@ Laravel `10.x`（PHP `8.2`）用のdocker開発環境。
 
 開発環境:
 
-- `MacBook Air (M1, 2020)`
-- `macOS Ventura 13.4`
-- Docker: `20.10.12`
-- Docker Compose: `2.2.3`
+- MacBook Air: M1, 2020
+- macOS: `Ventura 13.4` ~ `Sonoma 14.0`
+- Docker: `24.0.2`
+- Docker Compose: `v2.18.1`
 
 構築内容:
 
-- PHP: `8.2`
+- PHP: `8.2.x`
 - MySQL: `5.7`
 - nginx: `1.25.1`
-- composer: `2.5.8`
+- composer: `2.6.x`
 - Laravel: `10.x`
 
 オプショナル:
@@ -31,7 +31,9 @@ git clone後、任意のプロジェクト名に変更してディレクトリ�
 
 ```bash
 git clone git@github.com:rk-techs/docker-laravel.git
+```
 
+```bash
 mv docker-laravel/ <directory_name>
 
 cd <directory_name>
@@ -84,6 +86,10 @@ composer create-project --prefer-dist laravel/laravel:^10.0 .
 ## DB接続設定
 
 ### envファイル設定
+
+```bash
+cp .env.example .env
+```
 
 `.env`の設定
 
@@ -149,26 +155,45 @@ chmod 777 storage -R
 
 ### よく使うdockerコマンド
 
-**Start:**
+Start:
 
 ```bash
 docker compose up -d
 ```
 
-**app container:**
+Start with Build:
+
+```bash
+docker compose up -d --build
+```
+
+Execute bash in the app container:
 
 ```bash
 docker compose exec app bash
 ```
 
-**db container:**
+Execute bash in the db container:
 
 ```bash
 docker compose exec db bash
 ```
 
-**Finish:**
+Stop and Remove All Services:
 
 ```bash
 docker compose down
+```
+
+### Viteを使う場合
+
+Docker環境内でViteを利用し、ホットリロード機能を有効にするため、`vite.config.js` に次の設定を追加します。
+
+```js
+server: {
+    host: true,
+    hmr: {
+        host: 'localhost',
+    },
+},
 ```
