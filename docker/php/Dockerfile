@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 # --- Enable the following if using Laravel Vite ---
-# EXPOSE 5173
+EXPOSE 5173
 COPY php.ini /usr/local/etc/php/
 
 # Add user for rootless container
