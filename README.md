@@ -85,10 +85,6 @@ composer create-project --prefer-dist laravel/laravel:^10.0 .
 
 ### envファイル設定
 
-```bash
-cp .env.example .env
-```
-
 `.env`の設定
 
 ```bash
