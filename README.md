@@ -47,13 +47,11 @@ cd <directory_name>
 mkdir src
 ```
 
-## docker環境構築
+### docker環境構築
 
 ```bash
 docker compose up -d
 ```
-
-### appコンテナの中に入る
 
 `app` サービスのコンテナ内で bash シェルを起動する
 
@@ -187,7 +185,7 @@ docker compose down
 
 ### Viteを使う場合
 
-Docker環境内でViteを利用し、ホットリロード機能を有効にするため、`vite.config.js` に次の設定を追加します。
+Docker環境内でViteを利用し、ホットリロード機能を有効にするため、`vite.config.js` に次の設定を追加する。
 
 ```js
 server: {
