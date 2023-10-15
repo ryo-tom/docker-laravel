@@ -10,9 +10,6 @@ Laravel `10.x`（PHP `8.2`）用のdocker開発環境。
 - macOS: `Ventura 13.4` ~ `Sonoma 14.0`
 - Docker: `24.0.2`
 - Docker Compose: `v2.18.1`
-
-構築内容:
-
 - PHP: `8.2.x`
 - MySQL: `5.7`
 - nginx: `1.25.1`
@@ -100,6 +97,10 @@ DB_PASSWORD=secret
 
 ```bash
 cp .env.example .env.testing
+```
+
+```bash
+php artisan key:generate --env=testing
 ```
 
 ```bash
