@@ -21,7 +21,7 @@ RUN mv composer.phar /usr/local/bin/composer
 # Instaill Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
-RUN npm install npm@latest -g
+RUN npm install npm@10 -g
 
 # Set the user UID and theuser group GID added above
 USER ${UID}:${GID}
