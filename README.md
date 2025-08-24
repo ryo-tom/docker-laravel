@@ -57,18 +57,6 @@ Option 1 — Using Composer
 
 ```bash
 composer create-project laravel/laravel . "12.*" --prefer-dist
-
-
-cp .env.example .env
-php artisan key:generate
-
-# match docker-compose values
-# DB_HOST=db
-# DB_DATABASE=laravel_db
-# DB_USERNAME=laravel_user
-# DB_PASSWORD=laravel_password
-
-php artisan migrate
 ```
 
 Option 2 — Using the Laravel Installer
@@ -76,9 +64,31 @@ Option 2 — Using the Laravel Installer
 ```bash
 composer global require laravel/installer
 "$(composer global config bin-dir --absolute)"/laravel new . --no-interaction
+```
 
+### Setup Environment & Database
+
+Setup environment:
+
+```bash
 cp .env.example .env
 php artisan key:generate
+```
+
+Update `.env` file:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_password
+```
+
+Run migrations:
+
+```bash
 php artisan migrate
 ```
 
@@ -99,27 +109,6 @@ php artisan migrate
 
 > **Note**: Database is not exposed to host machine. Access only available from within Docker network.
 
-## 🔧 Development
-
-### File Permissions (Linux/macOS)
-
-```bash
-# Fix storage and cache permissions
-docker compose exec app chown -R www-data:www-data storage bootstrap/cache
-```
-
-### Database Connection
-
-Update your `.env`:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=db
-DB_PORT=3306
-DB_DATABASE=laravel_db
-DB_USERNAME=laravel_user
-DB_PASSWORD=laravel_password
-```
 
 ## 💡 Tips
 
