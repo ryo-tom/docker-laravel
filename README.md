@@ -51,20 +51,13 @@ docker compose exec app bash
 
 Inside container:
 
-The working directory is already `/var/www/html/src` (empty on first run). Choose one of the following.
-
-Option 1 — Using Composer
+The working directory is already `/var/www/html/src` (empty on first run). 
 
 ```bash
 composer create-project laravel/laravel . "12.*" --prefer-dist
 ```
 
-Option 2 — Using the Laravel Installer
-
-```bash
-composer global require laravel/installer
-"$(composer global config bin-dir --absolute)"/laravel new . --no-interaction
-```
+> Note: We don’t use `laravel new` here because it only runs in a completely empty target directory and relies on a writable Composer global home. In a Docker setup running as a non-root user, that adds fragile permission/setup steps and often breaks. Using composer create-project is simpler and more reproducible.
 
 ### Setup Environment & Database
 
@@ -95,20 +88,6 @@ php artisan migrate
 ## 🌐 Access URLs
 
 - **Application**: <http://localhost>
-
-## 🗄️ Database Information
-
-**From within containers:**
-
-- Host: `db`
-- Port: `3306`
-- Database: `laravel_db`
-- Username: `laravel_user`
-- Password: `laravel_password`
-- Root Password: `root_password`
-
-> **Note**: Database is not exposed to host machine. Access only available from within Docker network.
-
 
 ## 💡 Tips
 
