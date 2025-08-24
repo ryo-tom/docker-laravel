@@ -2,6 +2,9 @@
 .git
 .gitignore
 
+/.composer
+/.npm
+
 # Ignore Dockerfile and docker-compose files (if not needed inside the container)
 Dockerfile
 docker-compose.yml
