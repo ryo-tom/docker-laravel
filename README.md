@@ -56,7 +56,7 @@ The working directory is already `/var/www/html/src` (empty on first run). Choos
 Option 1 — Using Composer
 
 ```bash
-composer create-project laravel/laravel . "12.*" --prefer-dist --no-scripts
+composer create-project laravel/laravel . "12.*" --prefer-dist
 
 
 cp .env.example .env
