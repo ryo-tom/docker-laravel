@@ -1,29 +1,36 @@
+# docker/php/Dockerfile
 FROM php:8.2-fpm
-# --- Enable the following if using Laravel Vite ---
-EXPOSE 5173
-COPY php.ini /usr/local/etc/php/
 
-# Add user for rootless container
-ARG UID=1000
-ARG GID=1000
-RUN useradd -m -u ${UID} docker
+WORKDIR /var/www/html
 
-RUN apt-get update \
-  && apt-get install -y zlib1g-dev mariadb-client vim libzip-dev unzip \
-  && docker-php-ext-install zip pdo_mysql
+RUN set -eux; \
+  apt-get update || (sleep 5 && apt-get update); \
+  apt-get install -y --no-install-recommends \
+    git unzip ca-certificates curl \
+    libzip-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+    libicu-dev \
+    default-mysql-client; \
+  docker-php-ext-configure gd --with-freetype --with-jpeg; \
+  docker-php-ext-install -j"$(nproc)" pdo_mysql gd zip bcmath intl opcache; \
+  apt-get clean; \
+  rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-#Composer install
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-# Instaill Node.js and npm
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install npm@10 -g
+# Node.js
+ARG NODE_MAJOR=22
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
+ && apt-get install -y nodejs \
+ && npm install -g npm@latest \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-# Set the user UID and theuser group GID added above
-USER ${UID}:${GID}
 
-WORKDIR /project
+RUN mkdir -p /var/www/html/src/storage /var/www/html/src/bootstrap/cache \
+ && chown -R www-data:www-data /var/www/html
+
+USER www-data
+EXPOSE 9000 5173
+CMD ["php-fpm"]

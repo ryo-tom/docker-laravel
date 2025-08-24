@@ -1,194 +1,150 @@
-# docker-laravel
+# Docker Laravel
 
-Laravel `10.x`（PHP `8.2`）用のdocker開発環境。
+A Docker development environment for Laravel applications with PHP 8.2, MySQL, and Nginx.
 
-## 前提条件
+## 📋 Requirements
 
-開発環境:
+- Docker 20.x or higher
+- Docker Compose 2.x or higher
 
-- MacBook Air: M1, 2020
-- macOS: `Ventura 13.4` ~ `Sonoma 14.0`
-- Docker: `24.0.2`
-- Docker Compose: `v2.18.1`
-- PHP: `8.2.x`
-- MySQL: `5.7`
-- nginx: `1.25.1`
-- composer: `2.6.x`
-- Laravel: `10.x`
-
-オプショナル:
-
-- M1 Macの場合: `platform: linux/x86_64`を追記
-- テスト用DBを使う場合: `testdb`サービスコンテナを追記
-- Viteを使う場合: port `5173`の設定を追記
-
-## プロジェクト準備
-
-git clone後、任意のプロジェクト名に変更してディレクトリへ移動しておく
+## 🏗️ Project Structure
 
 ```bash
-git clone git@github.com:rk-techs/docker-laravel.git
+docker-laravel/
+├── docker/
+│   ├── mysql/
+│   │   └── my.cnf              # MySQL configuration
+│   ├── nginx/
+│   │   └── default.conf        # Nginx virtual host
+│   └── php/
+│       ├── Dockerfile          # PHP-FPM image
+│       └── php.ini             # PHP configuration
+├── src/                        # Laravel application root
+│   └── ...
+├── .dockerignore
+├── .gitignore
+├── docker-compose.yml
+└── README.md
 ```
 
-```bash
-mv docker-laravel/ <directory_name>
+## 🚀 Tech Stack
 
-cd <directory_name>
-```
+- **PHP**: 8.2-FPM
+- **Composer**: 2.x (latest)
+- **Laravel**: 12.x
+- **MySQL**: 8.0
+- **Nginx**: Latest
+- **Node.js**: 22.x LTS
+- **npm**: Latest
 
-## Laravelインストール
+## 🛠️ Quick Start
 
-先にホスト側に`src`ディレクトリを用意しておく
-
-```bash
-mkdir src
-```
-
-### docker環境構築
+### New Laravel Project
 
 ```bash
-docker compose up -d
-```
+# Start containers
+docker compose up -d --build
 
-`app` サービスのコンテナ内で bash シェルを起動する
-
-```bash
+# Enter container
 docker compose exec app bash
 ```
 
-作業ディレクトリ`project`（=Laravelのインストール先）に入ったことを確認（ここではユーザー名=`docker`に設定している）
+Inside container:
+
+The working directory is already `/var/www/html/src` (empty on first run). Choose one of the following.
+
+Option 1 — Using Composer
 
 ```bash
-<user_name>@<container_id>:/project$ 
+composer create-project laravel/laravel . "12.*" --prefer-dist
+
+cd src
+cp .env.example .env
+php artisan key:generate
+
+# match docker-compose values
+# DB_HOST=db
+# DB_DATABASE=laravel_db
+# DB_USERNAME=laravel_user
+# DB_PASSWORD=laravel_password
+
+php artisan migrate
 ```
 
-### composerでインストール
-
-カレントディレクトリ（`.`）に指定バージョンのLaravelをインストール（バージョン指定の記法はいくつかある）
+Option 2 — Using the Laravel Installer
 
 ```bash
-composer create-project --prefer-dist laravel/laravel=10.* .
+composer global require laravel/installer
+"$(composer global config bin-dir --absolute)"/laravel new . --no-interaction
+
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
 ```
 
+## 🌐 Access URLs
+
+- **Application**: <http://localhost>
+
+## 🗄️ Database Information
+
+**From within containers:**
+
+- Host: `db`
+- Port: `3306`
+- Database: `laravel_db`
+- Username: `laravel_user`
+- Password: `laravel_password`
+- Root Password: `root_password`
+
+> **Note**: Database is not exposed to host machine. Access only available from within Docker network.
+
+## 🔧 Development
+
+### File Permissions (Linux/macOS)
+
 ```bash
-composer create-project --prefer-dist laravel/laravel . "10.*"
+# Fix storage and cache permissions
+docker compose exec app chown -R www-data:www-data storage bootstrap/cache
 ```
 
-```bash
-composer create-project --prefer-dist laravel/laravel:^10.0 .
-```
+### Database Connection
 
-## DB接続設定
+Update your `.env`:
 
-### envファイル設定
-
-`.env`の設定
-
-```bash
+```env
 DB_CONNECTION=mysql
 DB_HOST=db
 DB_PORT=3306
-DB_DATABASE=laraveldb
-DB_USERNAME=dbuser
-DB_PASSWORD=secret
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_password
 ```
 
-テスト用の`.env.testing`を準備
+## 💡 Tips
+
+Common Commands:
 
 ```bash
-cp .env.example .env.testing
-```
+# Container management
+docker compose up -d          # Start containers
+docker compose down           # Stop containers
+docker compose logs -f app    # View logs
 
-```bash
-php artisan key:generate --env=testing
-```
-
-```bash
-DB_CONNECTION=mysql
-DB_HOST=testdb
-DB_PORT=3306
-DB_DATABASE=testdb
-DB_USERNAME=dbuser
-DB_PASSWORD=secret
-```
-
-## DB接続確認
-
-### Tinkerを起動
-
-```bash
-php artisan tinker
-```
-
-テスト用DB確認の場合は
-
-```php
-php artisan tinker --env=testing
-```
-
-### DB接続確認コマンド
-
-```php
-DB::select('select 1');
-```
-
-または
-
-```php
-DB::connection()->getPdo();
-```
-
-## storageの権限変更
-
-`storage`ディレクトリに対して、全ユーザーにread, write, executeの全権限を与える
-
-```bash
-chmod 777 storage -R
-```
-
-## Tips
-
-### よく使うdockerコマンド
-
-Start:
-
-```bash
-docker compose up -d
-```
-
-Start with Build:
-
-```bash
-docker compose up -d --build
-```
-
-Execute bash in the app container:
-
-```bash
+# Enter container for multiple commands
 docker compose exec app bash
-```
 
-Execute bash in the db container:
+# Laravel commands (inside container)
+php artisan migrate
+php artisan make:controller
+php artisan tinker
 
-```bash
-docker compose exec db bash
-```
+# Frontend commands (inside container)
+npm run dev
+npm run build
+npm run watch
 
-Stop and Remove All Services:
-
-```bash
-docker compose down
-```
-
-### Viteを使う場合
-
-Docker環境内でViteを利用し、ホットリロード機能を有効にするため、`vite.config.js` に次の設定を追加する。
-
-```js
-server: {
-    host: true,
-    hmr: {
-        host: 'localhost',
-    },
-},
+# Or run single commands from outside
+docker compose exec app php artisan migrate
+docker compose exec app composer install
 ```
