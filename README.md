@@ -85,6 +85,19 @@ Run migrations:
 php artisan migrate
 ```
 
+### Vite HMR in Docker
+
+Add this to `vite.config.ts` so the dev server binds inside the container and the browser connects from the host:
+
+```ts
+server: {
+    host: true,
+    hmr: {
+        host: 'localhost',
+    },
+},
+```
+
 ## 🌐 Access URLs
 
 - **Application**: <http://localhost>
