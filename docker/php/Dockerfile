@@ -1,4 +1,3 @@
-# docker/php/Dockerfile
 FROM php:8.2-fpm
 
 WORKDIR /var/www/html
@@ -28,9 +27,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_MAJOR}.x | bash - \
  && rm -rf /var/lib/apt/lists/*
 
 
-RUN mkdir -p /var/www/html/src/storage /var/www/html/src/bootstrap/cache \
- && chown -R www-data:www-data /var/www/html
+# npm / Composer caches (avoid EACCES)
+ENV COMPOSER_HOME=/var/www/html/.composer \
+    NPM_CONFIG_CACHE=/var/www/html/.npm
+RUN install -d -m 0775 -o www-data -g www-data "$COMPOSER_HOME" "$NPM_CONFIG_CACHE"
 
 USER www-data
+
 EXPOSE 9000 5173
 CMD ["php-fpm"]
